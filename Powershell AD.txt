@@ -1,0 +1,44 @@
+Using PowerShell (Command Line Method)
+Open PowerShell with Administrative Privileges:
+
+Press Win + X, select Windows PowerShell (Admin).
+Grant GenericAll Permission:
+
+powershell
+Copy code
+
+# Define the variables
+$aGroup = "A"
+$domainAdminsGroup = "Domain Admins"
+
+# Get the distinguished names of the groups
+$aGroupObject = Get-ADGroup -Identity $aGroup
+$domainAdmins = Get-ADGroup -Identity $domainAdminsGroup
+
+# Grant GenericAll permission to the A group on the Domain Admins group
+$acl = Get-ACL -Path "AD:$($domainAdmins.DistinguishedName)"
+$ace = New-Object System.DirectoryServices.ActiveDirectoryAccessRule (
+    [System.Security.Principal.SecurityIdentifier]::new($aGroupObject.SID),
+    [System.DirectoryServices.ActiveDirectoryRights]::GenericAll,
+    [System.Security.AccessControl.AccessControlType]::Allow
+)
+$acl.AddAccessRule($ace)
+Set-ACL -Path "AD:$($domainAdmins.DistinguishedName)" -AclObject $acl
+
+Explanation of PowerShell Commands:
+Get-ADGroup: Retrieves the Active Directory group object.
+
+-Identity: Specifies the group by its name.
+Get-ACL: Retrieves the Access Control List (ACL) for the specified AD object.
+
+-Path: Specifies the AD object by its distinguished name.
+New-Object System.DirectoryServices.ActiveDirectoryAccessRule: Creates a new access rule.
+
+System.Security.Principal.SecurityIdentifier: Constructs a security identifier for the group.
+System.DirectoryServices.ActiveDirectoryRights.GenericAll: Specifies the GenericAll permission.
+System.Security.AccessControl.AccessControlType.Allow: Specifies that the access rule is an allow rule.
+AddAccessRule: Adds the access rule to the ACL.
+
+Set-ACL: Applies the modified ACL to the AD object.
+
+By following these steps, you will grant the members of the A group "GenericAll" privileges over the DOMAIN ADMINS group. This allows the A group to manipulate the DOMAIN ADMINS group as needed.

